@@ -1,1 +1,1 @@
-Surah Al-Ghasyiyah 1-6 mp3
+Surah Al-Ghasyiyah 1-26 mp3
