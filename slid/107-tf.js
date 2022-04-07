@@ -1,0 +1,9 @@
+$('#info').on('click', function(){
+  $().msgpopup({
+   time: false,
+    text: "  <div class='head'>Al-Maa'uun (Barang-Barang Yang Berguna)</div><div class='cont'><hr><b>Surat Al Maa'uun:</b> Surat ini terdiri atas 7 ayat, termasuk golongan surat-surat Makkiyyah, diturunkan sesudah surat At Taakatsur. Nama <i>Al Maa'uun</i> diambil dari kata <i>Al Maa'uun</i> yang terdapat pada ayat 7, artinya barang-barang yang berguna.<br><br> Pokok-pokok isinya:<br> Beberapa sifat manusia yang dipandang sebagai mendustakan agama. Ancaman terhadap orang-orang yang melakukan shalat dengan lalai dan riya.<br><br> </div>  ",    type: 'info'  });})
+$('#info-2').on('click', function(){
+  $().msgpopup({
+   time: false,
+    text: "  <div class='head'>Al-Maa'uun (Barang-Barang Yang Berguna)</div><div class='cont'><hr><b>Surat Al Maa'uun</b> menjelaskan sifat-sifat manusia yang buruk yang membawa mereka ke dalam kesengsaraan.<br><br><i>HUBUNGAN SURAT AL MAA'UUN DENGAN SURAT AL KAUTSAR</i><br><br> Dalam surat Al Maa'uun dikemukakan sifat-sifat manusia yang buruk, sedang dalam surat Al Kautsar ditunjukkan sifat-sifat yang mulia, yang diperintahkan mengerjakannya.<br><br></div>  ",    type: 'info'  });})
+document.getElementById("srt-107").innerHTML = ' <a onClick="return noHistory(this);" href="159.html#1">1</a> <a onClick="return noHistory(this);" href="159.html#2">2</a> <a onClick="return noHistory(this);" href="159.html#3">3</a> <a onClick="return noHistory(this);" href="159.html#4">4</a> <a onClick="return noHistory(this);" href="159.html#5">5</a> <a onClick="return noHistory(this);" href="159.html#6">6</a> <a onClick="return noHistory(this);" href="159.html#7">7</a> </br> </br> ';

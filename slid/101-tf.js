@@ -1,0 +1,9 @@
+$('#info').on('click', function(){
+  $().msgpopup({
+   time: false,
+    text: "  <div class='head'>Al-Qari'ah (Hari Kiamat)</div><div class='cont'><hr> <b>Surat Al Qaari'ah:</b> Surat ini terdiri atas 11 ayat, termasuk golongan surat-surat Makkiyyah, diturunkan sesudah surat Quraisy. Nama <i>Al Qaari'ah</i> diambil dari kata <i>Al Qaari'ah</i> yang terdapat pada ayat pertama, artinya mengetok dengan keras, kemudian kata ini dipakai untuk nama hari kiamat.<br><br> Pokok-pokok isinya:<br> Kejadian-kejadian pada hari kiamat, yaitu manusia bertebaran, gunung berhamburan, amal perbuatan manusia ditimbang dan dibalasi.<br><br> </div>  ",    type: 'info'  });})
+$('#info-2').on('click', function(){
+  $().msgpopup({
+   time: false,
+    text: "  <div class='head'>Al-Qari'ah (Hari Kiamat)</div><div class='cont'><hr><b>Surat Al Qaari'ah</b> seluruhnya menjelaskan hal-hal yang akan terjadi di hari kiamat.<br><br><i>HUBUNGAN SURAT AL QAARI'AH DENGAN SURAT AT TAKAATSUR</i><br> Dalam surat Al Qaari'ah dijelaskan golongan orang-orang yang masuk surga dan golongan yang masuk neraka, sedang pada surat At Takaatsur diterangkan salah satu sebab yang membawa orang masuk neraka.<br><br></div>  ",    type: 'info'  });})
+document.getElementById("srt-101").innerHTML = ' <a onClick="return noHistory(this);" href="153.html#1">1</a> <a onClick="return noHistory(this);" href="153.html#2">2</a> <a onClick="return noHistory(this);" href="153.html#3">3</a> <a onClick="return noHistory(this);" href="153.html#4">4</a> <a onClick="return noHistory(this);" href="153.html#5">5</a> <a onClick="return noHistory(this);" href="153.html#6">6</a> <a onClick="return noHistory(this);" href="153.html#7">7</a> <a onClick="return noHistory(this);" href="153.html#8">8</a> <a onClick="return noHistory(this);" href="153.html#9">9</a> <a onClick="return noHistory(this);" href="153.html#10">10</a> <a onClick="return noHistory(this);" href="153.html#11">11</a> </br> </br> ';

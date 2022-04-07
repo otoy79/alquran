@@ -1,0 +1,9 @@
+$('#info').on('click', function(){
+  $().msgpopup({
+   time: false,
+    text: "  <div class='head'>Al-Lahab (Gejolak Api)</div><div class='cont'><hr><b>Surat Al Lahab:</b> Surat ini terdiri atas 5 ayat, termasuk golongan surat-surat Makkiyyah, diturunkan sesudah surat Al Fath. Nama <i>Al Lahab</i> diambil dari kata <i>Al Lahab</i> yang terdapat pada ayat ketiga surat ini yang artinya gejolak api. Surat ini juga dinamakan surat <i>Al Masad</i>.<br><br> Pokok-pokok isinya:<br> Cerita Abu Lahab dan isterinya yang menentang Rasul s.a.w. Keduanya akan celaka dan masuk neraka. Harta Abu Lahab, tak berguna untuk keselamatannya demikian pula segala usaha-usahanya.<br><br> </div>  ",    type: 'info'  });})
+$('#info-2').on('click', function(){
+  $().msgpopup({
+   time: false,
+    text: "  <div class='head'>Al-Lahab (Gejolak Api)</div><div class='cont'><hr><b>Surat Al Lahab</b>  menjelaskan kegagalan lawan-lawan Muhammad s.a.w.<br><br><i>HUBUNGAN SURAT AL LAHAB DEGAN SURAT AL IKHLASH</i><br><br> Surat Al Lahab mengisyaratkan bahwa kemusyrikan itu tidak dapat dipertahankan dan tidak akan menang walaupun pendukung-pendukungnya bekerja keras. Surat Al Ikhlash mengemukakan bahwa tauhid dalam Islam adalah tauhid yang semurni-murninya.<br><br></div>  ",    type: 'info'  });})
+document.getElementById("srt-111").innerHTML = ' <a onClick="return noHistory(this);" href="163.html#1">1</a> <a onClick="return noHistory(this);" href="163.html#2">2</a> <a onClick="return noHistory(this);" href="163.html#3">3</a> <a onClick="return noHistory(this);" href="163.html#4">4</a> <a onClick="return noHistory(this);" href="163.html#5">5</a> </br> </br> ';
