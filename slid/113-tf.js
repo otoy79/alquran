@@ -1,0 +1,9 @@
+$('#info').on('click', function(){
+  $().msgpopup({
+   time: false,
+    text: "  <div class='head'>Al-Falaq (Waktu Subuh)</div><div class='cont'><hr><b>Surat Al Falaq:</b> terdiri dari 5 ayat memerintahkan kepada orang-orang yang beriman untuk memohon perlindungan kepada Allah s.w.t. dari segala kejahatan.<br><br><i>HUBUNGAN SURAT AL FALAQ DENGAN SURAT AN NAAS</i><br><br> 1. Kedua-duanya sama-sama mengajarkan kepada manusia, hanya kepada Allah-lah menyerahkan perlindungan diri dari segala kejahatan.<br> 2. Surat Al Falaq memerintahkan untuk memohon perlindungan dari segala bentuk kejahatan, sedang surat An Naas memerintahkan untuk memohon perlindungan dari jin dan manusia.<br><br> </div>  ",    type: 'info'  });})
+$('#info-2').on('click', function(){
+  $().msgpopup({
+   time: false,
+    text: "  <div class='head'>Al-Falaq (Waktu Subuh)</div><div class='cont'><hr><b>Surat Al Falaq</b> memerintahkan kepada orang-orang yang beriman untuk memohon perlindungan kepada Allah s.w.t. dari segala kejahatan.<br><br><i>HUBUNGAN SURAT AL FALAQ DENGAN SURAT AN NAAS</i><br><br> 1. Kedua-duanya sama-sama mengajarkan kepada manusia, hanya kepada Allah-lah menyerahkan perlindungan diri dari segala kejahatan.<br> 2. Surat Al Falaq memerintahkan untuk memohon perlindungan dari segala bentuk kejahatan, sedang surat An Naas memerintahkan untuk memohon perlindungan dari jin dan manusia.<br><br></div>  ",    type: 'info'  });})
+document.getElementById("srt-113").innerHTML = ' <a onClick="return noHistory(this);" href="165.html#1">1</a> <a onClick="return noHistory(this);" href="165.html#2">2</a> <a onClick="return noHistory(this);" href="165.html#3">3</a> <a onClick="return noHistory(this);" href="165.html#4">4</a> <a onClick="return noHistory(this);" href="165.html#5">5</a> </br> </br> ';

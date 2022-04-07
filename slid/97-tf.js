@@ -1,0 +1,9 @@
+$('#info').on('click', function(){
+  $().msgpopup({
+   time: false,
+    text: "  <div class='head'>Al-Qadr (Kemuliaan)</div><div class='cont'><hr><b>Surat Al Qadr:</b> terdiri atas 5 ayat, termasuk golongan surat-surat Makkiyah, diturunkan sesudah surat 'Abasa. Surat ini dinamai <i>Al Qadr</i> (kemuliaan), diambil dari perkataan <i>Al Qadr</i> yang terdapat pada ayat pertama surat ini.<br><br><i>Pokok-pokok isinya:</i><br> Al Quran dimulai diturunkan pada malam Lailatul Qadr, yang nilainya lebih dari seribu bulan; para malaikat dan Jibril turun ke dunia pada malam Lailatul Qadr untuk mengatur segala urusan.<br><br> </div>  ",    type: 'info'  });})
+$('#info-2').on('click', function(){
+  $().msgpopup({
+   time: false,
+    text: "  <div class='head'>Al-Qadr (Kemuliaan)</div><div class='cont'><hr><b>Surat Al Qadr</b> Pada surat Al Qadr ini diterangkan bahwa permulaan Al Quran diturunkan ialah pada malam lailatul Qadr dan diterangkan juga ketinggian malam lailatul Qadr itu.<br><br><i>HUBUNGAN SURAT AL QADR DENGAN SURAT AL BAYYINAH</i><br><br> Surat Al Qadr menerangkan tentang permulaan Al Quran diturunkan, sedang surat Al Bayyinah menerangkan salah satu sebab Allah menurunkan Al Quran.<br><br></div>  ",    type: 'info'  });})
+document.getElementById("srt-97").innerHTML = ' <a onClick="return noHistory(this);" href="149.html#1">1</a> <a onClick="return noHistory(this);" href="149.html#2">2</a> <a onClick="return noHistory(this);" href="149.html#3">3</a> <a onClick="return noHistory(this);" href="149.html#4">4</a> <a onClick="return noHistory(this);" href="149.html#5">5</a> </br> </br> ';

@@ -1,0 +1,9 @@
+$('#info').on('click', function(){
+  $().msgpopup({
+   time: false,
+    text: "  <div class='head'>Az-Zalzalah (Keguncangan)</div><div class='cont'><hr><b>Surat Az Zalzalah:</b> Surat ini terdiri atas 8 ayat, termasuk golongan surat-surat Madaniyyah diturunkan sesudah surat An Nisaa'. Nama <i>Al Zalzalah</i> diambil dari kata: <i>Zilzaal</i> yang terdapat pada ayat pertama surat ini yang berarti goncangan. <i><br><br> Pokok-pokok isinya:</i><br> Kegoncangan bumi yang amat hebat pada hari kiamat dan kebingungan manusia ketika itu; manusia pada hari kiamat itu dikumpulkan untuk dihisab segala amal perbuatan mereka.<br><br> </div>  ",    type: 'info'  });})
+$('#info-2').on('click', function(){
+  $().msgpopup({
+   time: false,
+    text: "  <div class='head'>Az-Zalzalah (Keguncangan)</div><div class='cont'><hr><b>Surat Az Zalzalah</b> menerangkan tanda-tanda permulaan hari kiamat dan pada hari itu manusia akan melihat sendiri hasil perbuatan mereka, baik ataupun buruk, meskipun sebesar dzarrah.<br><br><i>HUBUNGAN SURAT AZ ZALZALAH DENGAN SURAT AL 'AADIYAAT</i><br><br> Surat Az Zalzalah menerangkan balasan atas perbuatan yang baik dan yang buruk, sedang pada surat Al 'Aadiyat Allah s.w.t. mencela orang-orang yang telah mencintai kehidupan dunia dan mengabaikan kehidupan akhirat dan tidak mempersiapkan diri mereka untuk kehidupan akhirat itu dengan amal kebajikan.<br><br></div>  ",    type: 'info'  });})
+document.getElementById("srt-99").innerHTML = ' <a onClick="return noHistory(this);" href="151.html#1">1</a> <a onClick="return noHistory(this);" href="151.html#2">2</a> <a onClick="return noHistory(this);" href="151.html#3">3</a> <a onClick="return noHistory(this);" href="151.html#4">4</a> <a onClick="return noHistory(this);" href="151.html#5">5</a> <a onClick="return noHistory(this);" href="151.html#6">6</a> <a onClick="return noHistory(this);" href="151.html#7">7</a> <a onClick="return noHistory(this);" href="151.html#8">8</a> </br> </br> ';
