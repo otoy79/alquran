@@ -1,0 +1,50 @@
+/*
+ * Font size style declarations for each variation.
+ *
+ * Observation: Note that the amount of classes here
+ * rely on how many variations you set on $.rvFontsize() call.
+ * 
+ * This classes are required to make rv font size jquery plugin works.
+ */
+
+.rvfs-1 .ar, .rvfs-1 { font-size: 16px }
+.rvfs-2 .ar, .rvfs-2 { font-size: 17px }
+.rvfs-3 .ar, .rvfs-3 { font-size: 18px }
+.rvfs-4 .ar, .rvfs-4 { font-size: 19px }
+.rvfs-5 .ar, .rvfs-5 { font-size: 20px }
+.rvfs-6 .ar, .rvfs-6 { font-size: 21px }
+.rvfs-7 .ar, .rvfs-7 { font-size: 22px }
+.rvfs-8 .ar, .rvfs-8 { font-size: 23px }
+.rvfs-9 .ar, .rvfs-9 { font-size: 24px }
+.rvfs-10 .ar, .rvfs-10 { font-size: 25px } 
+.rvfs-11 .ar, .rvfs-11 { font-size: 27px }
+.rvfs-12 .ar, .rvfs-12 { font-size: 29px }
+.rvfs-13 .ar, .rvfs-13 { font-size: 31px }
+.rvfs-14 .ar, .rvfs-14 { font-size: 34px }
+.rvfs-15 .ar, .rvfs-15 { font-size: 37px }
+.rvfs-16 .ar, .rvfs-16 { font-size: 40px }
+.rvfs-17 .ar, .rvfs-17 { font-size: 42px }
+.rvfs-18 .ar, .rvfs-18 { font-size: 44px }
+.rvfs-19 .ar, .rvfs-19 { font-size: 46px }
+.rvfs-20 .ar, .rvfs-20 { font-size: 48px }
+.rvfs-21 .ar, .rvfs-21 { font-size: 50px }
+
+.rvfsltn-1 .ltn .tj, .rvfsltn-1 { font-size: 3px }
+.rvfsltn-2 .ltn .tj, .rvfsltn-2 { font-size: 4px }
+.rvfsltn-3 .ltn  .tj, .rvfsltn-3 { font-size: 5px }
+.rvfsltn-4 .ltn .tj, .rvfsltn-4 { font-size: 6px }
+.rvfsltn-5 .ltn .tj, .rvfsltn-5 { font-size: 7px }
+.rvfsltn-6 .ltn .tj, .rvfsltn-6 { font-size: 8px }
+.rvfsltn-7 .ltn .tj, .rvfsltn-7 { font-size: 9px }
+.rvfsltn-8 .ltn .tj, .rvfsltn-8 { font-size: 10px }
+.rvfsltn-9 .ltn .tj, .rvfsltn-9 { font-size: 11px }
+.rvfsltn-10 .ltn .tj, .rvfsltn-10 { font-size: 12px }
+.rvfsltn-11 .ltn .tj, .rvfsltn-11 { font-size: 14px }
+.rvfsltn-12 .ltn .tj, .rvfsltn-12 { font-size: 16px }
+.rvfsltn-13 .ltn .tj, .rvfsltn-13 { font-size: 18px }
+.rvfsltn-14 .ltn .tj, .rvfsltn-14 { font-size: 20px }
+.rvfsltn-15 .ltn .tj, .rvfsltn-15 { font-size: 22px }
+.rvfsltn-16 .ltn .tj, .rvfsltn-16 { font-size: 24px }
+.rvfsltn-17 .ltn .tj, .rvfsltn-17 { font-size: 26px }
+
+
