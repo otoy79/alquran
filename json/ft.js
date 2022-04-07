@@ -1,0 +1,1 @@
+document.writeln("<img id=\"slide-menuft\" class=\"menu-fotter\" src=\"png/up.png\">");
