@@ -266,7 +266,9 @@ body.hide-indo .teks-indo {
     </style>
 </head>
 <body class="tajwid-on mushaf-4">
-
+   <button id="btn-top" onclick="window.scrollTo(0,0)" style="position: fixed; bottom: 20px; right: 20px; width: 45px; height: 45px; border-radius: 50%; background: var(--primary); color: white; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: none; z-index: 100; font-size: 20px; cursor: pointer;">
+    ↑
+</button>
 <div id="toast">Pesan muncul di sini</div>
 
    <!-- Add Header -->
@@ -420,52 +422,70 @@ body.hide-indo .teks-indo {
    
    // ➕
       function gantiSurah(nomor, targetAyat = null) {
-    // 1. Sembunyikan dashboard
     document.getElementById('dashboard-awal').style.display = 'none';
     surahSekarang = parseInt(nomor);
-
-    // 2. CEK MEMORI HP (OFFLINE CHECK)
-    const dataLama = localStorage.getItem('cache_surat_' + nomor);
     
-    // Jika internet mati DAN ada data di memori, langsung tampilkan
-    if (!navigator.onLine && dataLama) {
-        const resData = JSON.parse(dataLama);
-        dataAyatAktif = resData.ayat;
-        document.getElementById('judul-app').innerText = resData.namaLatin;
-        renderAyat(resData.namaLatin);
-        if(targetAyat) scrollKeAyat(targetAyat);
-        window.scrollTo(0,0);
-        tampilkanPesan("🌙 Mode Offline: Menggunakan data tersimpan");
-        return; // Berhenti di sini, tidak usah fetch internet
+    const dataLama = localStorage.getItem('cache_surat_' + nomor);
+
+    // Jika Offline, paksa pakai data lama
+    if (!navigator.onLine) {
+        if (dataLama) {
+            const resData = JSON.parse(dataLama);
+            renderOffline(resData, targetAyat);
+            return;
+        } else {
+            container.innerHTML = '<div style="text-align:center; padding:50px;">❌ Surah ini belum pernah dibuka. Butuh internet dulu sebentar, Brow.</div>';
+            return;
+        }
     }
 
-    // 3. JIKA ONLINE (ATAU DATA BELUM ADA), BARU FETCH
-    container.innerHTML = '<div style="text-align:center; padding:50px; opacity:0.6;">🌿 Memuat Surah...</div>';
-    
-    fetch(`https://equran.id/api/v2/surat/${nomor}`)
-        .then(r => r.json())
-        .then(res => {
-            dataAyatAktif = res.data.ayat;
-            document.getElementById('judul-app').innerText = res.data.namaLatin;
-            renderAyat(res.data.namaLatin);
-            
-            if(targetAyat) scrollKeAyat(targetAyat);
-            window.scrollTo(0,0);
+    // Jika Online, tetap ambil yang terbaru tapi kasih timeout
+    container.innerHTML = '<div style="text-align:center; padding:50px; opacity:0.6;">🌿 Menyambung ke Server...</div>';
 
-            // SIMPAN KE MEMORI (Untuk dibaca nanti pas offline)
-            localStorage.setItem('cache_surat_' + nomor, JSON.stringify(res.data));
-        })
-        .catch(err => {
-            // JAGA-JAGA JIKA INTERNET MATI SAAT FETCH
-            if(dataLama) {
-                const resData = JSON.parse(dataLama);
-                dataAyatAktif = resData.ayat;
-                renderAyat(resData.namaLatin);
-                tampilkanPesan("🌙 Koneksi hilang, memuat dari memori...");
-            } else {
-                container.innerHTML = '<div style="text-align:center; padding:50px; color:red;">❌ Gagal memuat. Butuh internet untuk pertama kali.</div>';
-            }
-        });
+    // Ganti URL fetch lama dengan yang ini (Lebih stabil untuk surah 72-114)
+    fetch(`https://quran-api-id.vercel.app/surahs/${nomor}`)
+    .then(r => r.json())
+    .then(res => {
+        // API ini strukturnya: res.name, res.ayahs
+        dataAyatAktif = res.ayahs;
+        document.getElementById('judul-app').innerText = res.name;
+        renderAyat(res.name);
+        
+        if(targetAyat) scrollKeAyat(targetAyat);
+        window.scrollTo(0,0);
+
+        // Simpan ke memori (Simpan seluruh objek res)
+        localStorage.setItem('cache_surat_' + nomor, JSON.stringify(res));
+    })
+    .catch(err => {
+        // Kalau gagal, coba cari di localStorage
+        const dataLama = localStorage.getItem('cache_surat_' + nomor);
+        if(dataLama) {
+            renderOffline(JSON.parse(dataLama), targetAyat);
+        } else {
+            container.innerHTML = '<div style="text-align:center; padding:50px;">❌ Sinyal lagi Lemah, Brow! Coba geser cari sinyal atau aktifkan data.</div>';
+        }
+    });
+  }
+    // Fungsi pembantu biar script nggak bengkak
+      function renderOffline(resData, targetAyat) {
+    // CEK: Kalau ada .ayat (API e-quran), pakai itu. Kalau ada .ayahs (API Vercel), pakai itu.
+    dataAyatAktif = resData.ayat || resData.ayahs;
+    
+    // CEK: Judul juga sama, kadang namanya 'namaLatin', kadang 'name'
+    const judul = resData.namaLatin || resData.name;
+    
+    if (!dataAyatAktif) {
+        container.innerHTML = '<div style="text-align:center; padding:50px;">❌ Data di memori rusak. Sila buka saat online kembali.</div>';
+        return;
+    }
+
+    document.getElementById('judul-app').innerText = judul;
+    renderAyat(judul);
+    
+    if(targetAyat) scrollKeAyat(targetAyat);
+    window.scrollTo(0,0);
+    tampilkanPesan("🌙 Membaca dari Memori HP (Offline)");
 }
 
 
@@ -853,13 +873,20 @@ function updateTabelJadwal(t, kota) {
     }
 }
 
-
-
   if ('service-worker' in navigator) {
   navigator.serviceWorker.register('sw.js')
     .then(() => console.log("Aplikasi Siap Digunakan Offline! 🚀"))
     .catch(() => console.log("Gagal mengaktifkan mode offline."));
 }
+
+   window.onscroll = function() {
+    const btn = document.getElementById('btn-top');
+    if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) {
+        btn.style.display = "block";
+    } else {
+        btn.style.display = "none";
+    }
+};
 </script>
 </body>
 </html>
