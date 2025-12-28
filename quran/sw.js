@@ -1,4 +1,4 @@
-const cacheName = 'quran-v2';
+const cacheName = 'quran-v3';
 const assets = [
   './',
   './index.html',

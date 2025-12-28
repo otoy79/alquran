@@ -495,11 +495,6 @@ function updateCacheInBackground(nomor) {
     tampilkanPesan("🌙 Membaca dari Memori HP (Offline)");
 }
 
-
-
-
-
-
     function beriWarna(teks) {
         if (!teks) return "";
         let t = teks;
@@ -516,36 +511,45 @@ function updateCacheInBackground(nomor) {
     }
 
     function renderAyat(namaSurah) {
-        container.innerHTML = '';
-        const namaAman = namaSurah.replace(/'/g, "\\'");
-        dataAyatAktif.forEach((item, index) => {
-            const card = document.createElement('div');
-            card.className = 'ayat-card';
-            card.id = `card-${index}`;
-            
-            const dataShare = {
-                surah: namaSurah,
-                ayat: item.nomorAyat,
-                arab: item.teksArab,
-                latin: item.teksLatin,
-                indo: item.teksIndonesia
-            };
-            const dataString = btoa(unescape(encodeURIComponent(JSON.stringify(dataShare))));
+    container.innerHTML = '';
+    const namaAman = namaSurah.replace(/'/g, "\\'");
+    
+    dataAyatAktif.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'ayat-card';
+        card.id = `card-${index}`;
 
-            card.innerHTML = `
-                <div style="display:flex; justify-content:space-between; margin-bottom: 15px; align-items: center; font-size:12px;">
-                    <span style="background:var(--primary); text-align: center; color:white; padding:5px 10px; border-radius:10px;">Ayat ${item.nomorAyat}</span>
-                    <div style="display:flex; gap:8px;">
-                        <button style="background:none; border:1px solid #ccc; color:var(--text); border-radius:5px; cursor:pointer; padding:3px 8px;" onclick="simpanBmark(${surahSekarang}, ${item.nomorAyat}, '${namaAman}')">🔖 Simpan</button>
-                        <button style="background:none; border:1px solid #ccc; color:var(--text); border-radius:5px; cursor:pointer; padding:3px 8px;" onclick="prosesShare('${dataString}')">📤 Share</button>
-                       
-                    </div>
-                </div>
-                <div class="teks-arab" onclick="putarAudio(${index})" style="font-size:${fontSizeArab}px;">${beriWarna(item.teksArab)}</div>
-                <div class="teks-latin" style="color:var(--primary); margin-top:15px; font-style:italic; font-size:14px;">${item.teksLatin}</div>
-                <div class="teks-indo" style="margin-top:10px; line-height:1.4; font-size:15px; opacity:0.9;">${item.teksIndonesia}</div>
-            `;
-            container.appendChild(card);
+        // JURUS BUNGALON: Cek semua kemungkinan nama variabel
+        // Jika teksArab nggak ada, pakai .arab. Jika teksLatin nggak ada, pakai .latin, dst.
+        const ar = item.teksArab || item.arab || "";
+        const lt = item.teksLatin || item.latin || "";
+        const id = item.teksIndonesia || item.translation || item.id || "";
+        const no = item.nomorAyat || item.number || (index + 1);
+
+        const dataShare = {
+            surah: namaSurah,
+            ayat: no,
+            arab: ar,
+            latin: lt,
+            indo: id
+        };
+            // 3. Encode data untuk tombol Share
+const dataString = btoa(unescape(encodeURIComponent(JSON.stringify(dataShare))));
+
+// 4. Baru masukkan ke innerHTML (Ganti semua item.xxx dengan variabel penyelamat tadi)
+card.innerHTML = `
+    <div style="display:flex; justify-content:space-between; margin-bottom: 15px; align-items: center; font-size:12px;">
+        <span style="background:var(--primary); text-align: center; color:white; padding:5px 10px; border-radius:10px;">Ayat ${no}</span>
+        <div style="display:flex; gap:8px;">
+            <button style="background:none; border:1px solid #ccc; color:var(--text); border-radius:5px; cursor:pointer; padding:3px 8px;" onclick="simpanBmark(${surahSekarang}, ${no}, '${namaAman}')">🔖 Simpan</button>
+            <button style="background:none; border:1px solid #ccc; color:var(--text); border-radius:5px; cursor:pointer; padding:3px 8px;" onclick="prosesShare('${dataString}')">📤 Share</button>
+        </div>
+    </div>
+    <div class="teks-arab" onclick="putarAudio(${index})" style="font-size:${fontSizeArab}px;">${beriWarna(ar)}</div>
+    <div class="teks-latin" style="color:var(--primary); margin-top:15px; font-style:italic; font-size:14px;">${lt}</div>
+    <div class="teks-indo" style="margin-top:10px; line-height:1.4; font-size:15px; opacity:0.9;">${id}</div>
+`;
+container.appendChild(card);
         });
     }
 
@@ -900,22 +904,24 @@ function updateTabelJadwal(t, kota) {
     for (let i = 1; i <= 114; i++) {
         const sudahAda = localStorage.getItem('cache_surat_' + i);
         
-        // Kalau belum ada di memori, kita download
         if (!sudahAda) {
             try {
-                const res = await fetch(`https://equran.id/api/v2/surat/${i}`);
+                // PAKAI URL YANG SAMA DENGAN gantiSurah
+                const res = await fetch(`https://quran-api-id.vercel.app/surahs/${i}`);
                 const data = await res.json();
-                localStorage.setItem('cache_surat_' + i, JSON.stringify(data.data));
+                
+                // Simpan UTUH (karena API ini tidak pakai .data)
+                localStorage.setItem('cache_surat_' + i, JSON.stringify(data));
                 console.log(`✅ Surah ${i} berhasil dibackup`);
                 
-                // Kasih jeda 2 detik biar server nggak marah
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                // Jeda 1 detik saja biar cepet
+                await new Promise(resolve => setTimeout(resolve, 1000));
             } catch (err) {
-                console.log(`❌ Gagal backup surah ${i}, lanjut nanti.`);
+                console.log(`❌ Gagal surah ${i}`);
             }
         }
     }
-    console.log("🚀 Semua surah sudah siap dibaca offline!");
+    tampilkanPesan("🚀 Semua surah siap dibaca offline!");
 }
 
 // Jalankan proses ini 5 detik setelah aplikasi terbuka
