@@ -1,22 +1,23 @@
-const cacheName = 'quran-v1';
+const cacheName = 'quran-v2';
 const assets = [
   './',
   './index.html',
-  // Tambahkan file CSS atau gambar kamu di sini jika ada, contoh:
-  // './style.css',
-  // './script.js'
+  './manifest.json',
+  './sw.js',
+  './LPMQ.ttf'
 ];
 
-// 1. Proses "Memfotokopi" file saat aplikasi dibuka pertama kali
+// Instalasi & Simpan Aset ke Cache
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(cacheName).then(cache => {
-      cache.addAll(assets);
+      // Kita pakai 'addAll' agar semua file masuk ke memori HP
+      return cache.addAll(assets);
     })
   );
 });
 
-// 2. Proses menyajikan file "Fotokopi" saat internet mati
+// Ambil data dari Cache kalau Offline
 self.addEventListener('fetch', e => {
   e.respondWith(
     caches.match(e.request).then(res => {

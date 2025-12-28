@@ -418,56 +418,63 @@ body.hide-indo .teks-indo {
     document.getElementById('judul-app').innerText = "Surah";
     window.scrollTo(0,0);
 }
-
-   
-   // ➕
-      function gantiSurah(nomor, targetAyat = null) {
+    
+   //➕➕➕
+     function gantiSurah(nomor, targetAyat = null) {
     document.getElementById('dashboard-awal').style.display = 'none';
     surahSekarang = parseInt(nomor);
     
-    const dataLama = localStorage.getItem('cache_surat_' + nomor);
-
-    // Jika Offline, paksa pakai data lama
-    if (!navigator.onLine) {
-        if (dataLama) {
-            const resData = JSON.parse(dataLama);
-            renderOffline(resData, targetAyat);
-            return;
-        } else {
-            container.innerHTML = '<div style="text-align:center; padding:50px;">❌ Surah ini belum pernah dibuka. Butuh internet dulu sebentar, Brow.</div>';
-            return;
-        }
-    }
-
-    // Jika Online, tetap ambil yang terbaru tapi kasih timeout
-    container.innerHTML = '<div style="text-align:center; padding:50px; opacity:0.6;">🌿 Menyambung ke Server...</div>';
-
-    // Ganti URL fetch lama dengan yang ini (Lebih stabil untuk surah 72-114)
-    fetch(`https://quran-api-id.vercel.app/surahs/${nomor}`)
-    .then(r => r.json())
-    .then(res => {
-        // API ini strukturnya: res.name, res.ayahs
-        dataAyatAktif = res.ayahs;
-        document.getElementById('judul-app').innerText = res.name;
-        renderAyat(res.name);
+    // 1. CEK MEMORI DULU (Wajib diutamakan)
+    const cache = localStorage.getItem('cache_surat_' + nomor);
+    if (cache) {
+        const resData = JSON.parse(cache);
+        // Logika fleksibel: ambil .ayat atau .ayahs atau datanya langsung
+        dataAyatAktif = resData.ayat || resData.ayahs || resData;
+        const judul = resData.namaLatin || resData.name || "Surah";
+        
+        document.getElementById('judul-app').innerText = judul;
+        renderAyat(judul);
         
         if(targetAyat) scrollKeAyat(targetAyat);
         window.scrollTo(0,0);
+        
+        // Update di background kalau online
+        if(navigator.onLine) updateCacheInBackground(nomor);
+        return; // SELESAI jika ada cache
+    }
 
-        // Simpan ke memori (Simpan seluruh objek res)
-        localStorage.setItem('cache_surat_' + nomor, JSON.stringify(res));
-    })
-    .catch(err => {
-        // Kalau gagal, coba cari di localStorage
-        const dataLama = localStorage.getItem('cache_surat_' + nomor);
-        if(dataLama) {
-            renderOffline(JSON.parse(dataLama), targetAyat);
-        } else {
-            container.innerHTML = '<div style="text-align:center; padding:50px;">❌ Sinyal lagi Lemah, Brow! Coba geser cari sinyal atau aktifkan data.</div>';
-        }
-    });
-  }
-    // Fungsi pembantu biar script nggak bengkak
+    // 2. JIKA TIDAK ADA CACHE, BARU FETCH
+    container.innerHTML = '<div style="text-align:center; padding:50px; opacity:0.6;">🌿 Menyambung ke Server...</div>';
+
+    fetch(`https://quran-api-id.vercel.app/surahs/${nomor}`)
+        .then(r => r.json())
+        .then(res => {
+            dataAyatAktif = res.ayahs;
+            document.getElementById('judul-app').innerText = res.name;
+            renderAyat(res.name);
+            
+            if(targetAyat) scrollKeAyat(targetAyat);
+            window.scrollTo(0,0);
+
+            // Simpan ke memori
+            localStorage.setItem('cache_surat_' + nomor, JSON.stringify(res));
+        })
+        .catch(err => {
+            container.innerHTML = '<div style="text-align:center; padding:50px;">❌ Gagal memuat. Periksa koneksi internetmu, Brow!</div>';
+        });
+} // <--- Hanya ada satu tutup kurung di sini untuk fungsi gantiSurah
+
+function updateCacheInBackground(nomor) {
+    // Pakai try-catch biar kalau gagal update tidak ganggu user
+    fetch(`https://equran.id/api/v2/surat/${nomor}`)
+        .then(r => r.json())
+        .then(res => {
+            if(res.data) localStorage.setItem('cache_surat_' + nomor, JSON.stringify(res.data));
+        })
+        .catch(e => console.log("Gagal update background"));
+}
+
+    // ➕➕Fungsi pembantu biar script nggak bengkak
       function renderOffline(resData, targetAyat) {
     // CEK: Kalau ada .ayat (API e-quran), pakai itu. Kalau ada .ayahs (API Vercel), pakai itu.
     dataAyatAktif = resData.ayat || resData.ayahs;
@@ -478,8 +485,8 @@ body.hide-indo .teks-indo {
     if (!dataAyatAktif) {
         container.innerHTML = '<div style="text-align:center; padding:50px;">❌ Data di memori rusak. Sila buka saat online kembali.</div>';
         return;
-    }
-
+    
+  }
     document.getElementById('judul-app').innerText = judul;
     renderAyat(judul);
     
@@ -887,6 +894,51 @@ function updateTabelJadwal(t, kota) {
         btn.style.display = "none";
     }
 };
+
+   async function sedotSemuaSurah() {
+    console.log("Memulai proses backup data offline...");
+    for (let i = 1; i <= 114; i++) {
+        const sudahAda = localStorage.getItem('cache_surat_' + i);
+        
+        // Kalau belum ada di memori, kita download
+        if (!sudahAda) {
+            try {
+                const res = await fetch(`https://equran.id/api/v2/surat/${i}`);
+                const data = await res.json();
+                localStorage.setItem('cache_surat_' + i, JSON.stringify(data.data));
+                console.log(`✅ Surah ${i} berhasil dibackup`);
+                
+                // Kasih jeda 2 detik biar server nggak marah
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            } catch (err) {
+                console.log(`❌ Gagal backup surah ${i}, lanjut nanti.`);
+            }
+        }
+    }
+    console.log("🚀 Semua surah sudah siap dibaca offline!");
+}
+
+// Jalankan proses ini 5 detik setelah aplikasi terbuka
+window.addEventListener('load', () => {
+    setTimeout(sedotSemuaSurah, 5000);
+});
 </script>
+  <script>
+   // Script biar HP otomatis update kalau kamu habis edit di Cloudflare
+if ('service-worker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+        reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // Tampilkan pesan ke user atau langsung auto-refresh
+                    tampilkanPesan("✨ Update tersedia! Memuat versi terbaru...");
+                    setTimeout(() => { location.reload(); }, 2000);
+                }
+            });
+        });
+    });
+}
+  </script>
 </body>
 </html>
