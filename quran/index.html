@@ -1,0 +1,865 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2e7d32">
+    <title>Al-Qur'an Pro Ultimate</title>
+    <style>
+        /* 1. FONT LOKAL */
+        @font-face {
+            font-family: 'LPMQ';
+            src: url('LPMQ.ttf') format('truetype');
+            font-display: swap;
+        }
+
+      /* 1. VARIABEL DASAR (DEFAULT) */
+:root {
+    --primary: #f2a972;
+    --primary-dark: #219150;
+    --bg: #ffffff;
+    --text: #333333;
+    --card-bg: #f9f9f9;
+    --accent: #e67e22;
+    --border: #eeeeee;
+}
+
+/* 2. DEFINISI TEMA MUSHAF */
+
+/* Mushaf 1: Standar Hijau */
+body.mushaf-1 { 
+    --primary: #b0540e; 
+    --bg: #ffffff; 
+    --card-bg: #ffffff; 
+    --text: #333; 
+}
+
+/* Mushaf 1: Standar Hijau */
+body.mushaf-1❌ { 
+    --primary: #27ae60; 
+    --bg: #ffffff; 
+    --card-bg: #ffffff; 
+    --text: #333; 
+}
+
+/* Mushaf 2: Madinah (Krem) - Dikunci agar tetap nyaman */
+body.mushaf-2 { 
+    --primary: #5d4037 !important; 
+    --bg: #f4ecd8 !important; 
+    --card-bg: #fdfaf0 !important; 
+    --text: #3e2723 !important; 
+    --border: #e0d5b0;
+}
+
+/* Mushaf 3: Hafalan (Teal/Hijau Daun) */
+body.mushaf-3 { 
+    --primary: #00796b !important; 
+    --bg: #e0f2f1 !important; 
+    --card-bg: #ffffff !important; 
+    --text: #004d40 !important; 
+}
+
+/* Mushaf 4: Minimalis (Arab Saja) */
+body.mushaf-4 { 
+    --primary: #2c3e50; 
+    --bg: #ffffff; 
+    --card-bg: #ffffff; 
+    --text: #333;
+}
+/* Sembunyikan Latin & Indo di Mushaf 4 */
+body.mushaf-4 .teks-latin, 
+body.mushaf-4 .teks-indo { 
+    display: none !important; 
+}
+
+/* 3. LOGIKA DARK MODE */
+/* Hanya aktif jika BUKAN mushaf 2 atau 3 */
+body.dark-mode:not(.mushaf-2):not(.mushaf-3) {
+    --bg: #121212;         /* Latar belakang hitam pekat */
+    --card-bg: #1e1e1e;    /* Kartu ayat abu-abu sangat gelap */
+    --text: #e0e0e0;       /* Teks putih gading agar tidak silau */
+    --border: #333333;
+    --primary: #2ecc71;    /* Hijau cerah agar tetap terlihat di mode gelap */
+    --header-bg: #111111;  /* Khusus Header saja yang jadi hitam */
+}
+/* 4. PENERAPAN KE ELEMEN */
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding-bottom: 120px;
+            overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+}
+
+.header {
+    background: var(--primary);
+    color: white;
+    padding: 15px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: background 0.4s ease;
+}
+  .header {
+    background: var(--header-bg, var(--primary)); 
+    color: white;
+    transition: 0.4s;
+}
+   .logo-slider-left { 
+   text-align: right; 
+   position: relative;
+   left: 0;
+   padding: 5px;
+    font-weight: bold; 
+    cursor: pointer;
+     transition: 0.3s;
+}
+
+.teks-arab span { 
+    color: inherit; 
+}
+/* Pastikan elemen kecil seperti nomor ayat tetap hijau */
+body.dark-mode .nomor-ayat {
+    color: var(--primary);
+}
+
+        .menu-btn {
+            position: absolute; left: 15px; top: 15px; width: 40px; height: 40px;
+            background: rgba(255,255,255,0.2); border: none; font-size: 20px; color: white; 
+            cursor: pointer; border-radius: 12px; backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+        .menu-btn:hover { background: rgba(255,255,255,0.3); }
+
+        /* 3. TAJWID & TEKS ARAB */
+        .teks-arab { 
+            font-family: 'LPMQ', serif;
+            text-align: right; 
+            line-height: 2.2; 
+            direction: rtl; 
+            cursor: pointer;
+            word-spacing: 5px;
+        }
+   /* Sembunyikan Latin jika class hide-latin ada di body */
+body.hide-latin .teks-latin {
+    display: none !important;
+}
+
+/* Sembunyikan Terjemahan jika class hide-indo ada di body */
+body.hide-indo .teks-indo {
+    display: none !important;
+}
+        body.tajwid-on .ghunnah { color: #e91e63 !important; }
+        body.tajwid-on .iqlab { color: #4caf50 !important; }
+        body.tajwid-on .ikhfa { color: #ff9800 !important; }
+        body.tajwid-on .idgham { color: #9c27b0 !important;  }
+        body.tajwid-on .qalqalah { color: #2196f3 !important;  }
+
+        /* 4. CARD STYLING */
+        .ayat-card {
+            background: var(--card-bg); margin: 15px; padding: 20px;
+            border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); 
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .ayat-card.active { 
+            border-left: 5px solid var(--primary); 
+            background: rgba(39, 174, 96, 0.08);
+            transform: scale(1.02);
+        }
+
+        /* 5. INPUT & SELECT (Biar Manis) */
+        select, input[type="text"] {
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+        select:focus, input[type="text"]:focus { border-color: var(--primary); }
+
+        .settings-item { 
+            margin-bottom: 18px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+
+        /* 6. SETTINGS PANEL */
+        .settings-panel {
+            position: fixed; left: -320px; top: 0; width: 280px; height: 100%;
+            background: var(--card-bg); z-index: 200; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 25px; box-shadow: none; visibility: hidden;
+        }
+        .settings-panel.open { left: 0; visibility: visible; box-shadow: 10px 0 30px rgba(0,0,0,0.2); }
+        
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); display: none; z-index: 150; backdrop-filter: blur(3px);
+        }
+
+        /* 7. CUSTOM ALERT (TOAST) */
+        #toast {
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+            background: #333; color: white; padding: 12px 25px; border-radius: 30px;
+            font-size: 14px; z-index: 1000; opacity: 0; transition: 0.4s; pointer-events: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; min-width: 200px;
+        }
+        #toast.show { opacity: 1; bottom: 120px; }
+
+        .player-bar {
+            position: fixed; bottom: 0; width: 100%; background: var(--card-bg);
+            padding: 10px 0; text-align: center; box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+            z-index: 90;
+        }
+
+        .btn-action {
+            background: var(--primary); color: white; border: none; padding: 12px 35px;
+            border-radius: 25px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .btn-action:active { transform: scale(0.95); }
+
+        /* MUSHAF VARIATIONS */
+        body.mushaf-2 .ayat-card { background: #fffdf5; border: 1px solid #eaddc1; }
+        body.mushaf-2.dark-mode .ayat-card { background: #3d3a30; }
+
+
+/* Card Hero Versi Mini agar tidak makan tempat */
+.card-hero-mini {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 20px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.btn-quick-mini {
+    background: var(--card-bg);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    padding: 6px 15px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Sembunyikan scrollbar tapi tetap bisa di-scroll */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+   
+    #jadwal-sholat div {
+    flex: 1;
+    transition: all 0.4s ease;
+    padding: 5px; /* Biar pas kena warna background ada ruangnya */
+}
+    </style>
+</head>
+<body class="tajwid-on mushaf-4">
+
+<div id="toast">Pesan muncul di sini</div>
+
+   <!-- Add Header -->
+<div class="header">
+    <button class="menu-btn" onclick="toggleSettings()">⚙️</button>
+    <h2 id="judul-app" style="margin:0; letter-spacing: 1px;">Surah</h2>
+    <small id="sub-judul" style="opacity: 0.9;">Memuat...</small>
+  </div>
+
+   <!-- Header Back -->
+  <header class="header" onclick="kembaliKeHome()">
+    <h2 style="margin:0; letter-spacing: 1px;">Al-Qur'an Pro</h2>
+   <div style="margin:0;">
+    <span style="padding-right:35%">&#x27F8; </span> <span>🏠</span> <span style="padding-left:35%">&#x27F9;</span></div>
+</header>
+
+<div id="dashboard-awal" style="position: sticky; top: 70px; z-index: 90; background: var(--bg); padding: 15px; border-bottom: 1px solid var(--border);">
+    
+    <div id="resume-card" class="card-hero-mini" onclick="bukaTerakhir()">
+        <span style="font-size: 12px; opacity: 0.8;"> 📌 Lanjut membaca...: </span>
+         <span id="resume-info" style="font-weight: bold;">Memuat...</span>
+    </div>
+  <div style="font-size: 9px; opacity: 0.6; margin: 5px; text-align: right;">
+    📍 Jadwal Sholat Otomatis
+</div>
+  <div id="jadwal-sholat" style="background: var(--card-bg); padding: 12px; border-radius: 12px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text);">
+        <div style="text-align: center;"><b>Subuh</b><br><span id="shubuh">00:00</span></div>
+        <div style="text-align: center;"><b>Dzuhur</b><br><span id="dhuhr">00:00</span></div>
+        <div style="text-align: center;"><b>Ashar</b><br><span id="asr">00:00</span></div>
+        <div style="text-align: center;"><b>Maghrib</b><br><span id="maghrib">00:00</span></div>
+        <div style="text-align: center;"><b>Isya</b><br><span id="isha">00:00</span></div>
+    </div>
+  <div id="countdown-sholat" style="text-align: center; font-size: 11px; margin-top: 8px; color: var(--primary); font-weight: bold; opacity: 0.9;">
+    Memuat hitung mundur...
+</div>
+  
+   <!-- Cari Surah -->
+    <div style="padding:20px; text-align:center;">
+    <input type="text" id="cariSurah" placeholder="Cari Surah (contoh: Al-Kahfi)..." oninput="filterSurah(this.value)" style="width:90%; max-width:400px; border-radius:25px; border:1px solid #ddd; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+    <div id="hasilCari" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:15px;">
+   </div>
+  </div>
+
+   <!-- Surah Pilihan -->
+        <h4 style="margin-bottom: 12px; color: var(--text); opacity: 0.8;">Surah Pilihan</h4>
+    <div style="margin-top: 10px; display: flex; gap: 8px; overflow-x: auto; white-space: nowrap; padding-bottom: 5px;" class="hide-scrollbar">
+        <button class="btn-quick-mini" onclick="gantiSurah(18)">Al-Kahfi</button>
+        <button class="btn-quick-mini" onclick="gantiSurah(36)">Yasin</button>
+        <button class="btn-quick-mini" onclick="gantiSurah(67)">Al-Mulk</button>
+        <button class="btn-quick-mini" onclick="gantiSurah(55)">Ar-Rahman</button>
+        <button class="btn-quick-mini" onclick="gantiSurah(56)">Al-Waqi'ah</button>
+    </div>
+</div>
+  
+   <!-- Add Modal Pengaturan -->
+<div class="overlay" id="overlay" onclick="toggleSettings()"></div>
+<div class="settings-panel" id="settingsPanel">
+    <h3 style="margin-top:0; color:var(--primary);">Pengaturan</h3>
+    <hr style="border:0; border-top:1px solid #ddd; margin-bottom:20px;">
+    
+    <div class="settings-item">
+        <label>Tipe Mushaf</label>
+        <select id="pilihMushaf" onchange="gantiTipeMushaf(this.value)">
+            <option value="mushaf-1">Standar</option>
+            <option value="mushaf-2">Madinah (Krem)</option>
+            <option value="mushaf-3">Hafalan (Arab Saja)</option>
+            <option value="mushaf-4">Minimalis</option>
+        </select>
+    </div>
+
+    <div class="settings-item">
+        <label>Pilih Qari</label>
+       <select id="pilihQari" onchange="gantiQari(this.value)">
+    <option value="Alafasy">M. Rashid Alafasy</option>
+    <option value="Abdurrahmaan_As-Sudais">As-Sudais</option>
+    <option value="Muhammad_Jibreel">Muhammad_Jibreel</option>
+    <option value="Abdul_Basit_Murattal">Abdul Basit</option>
+</select>
+    </div>
+    <div class="settings-item"><label>Mode Gelap</label><input type="checkbox" id="checkDark" onchange="toggleDarkMode(this.checked)"></div>
+    <div class="settings-item"><label>Tajwid Warna</label><input type="checkbox" id="checkTajwid" onchange="toggleTajwid(this.checked)"></div>
+    <div class="settings-item"><label>Tampilkan Latin</label><input type="checkbox" id="checkLatin" onchange="toggleLatin(this.checked)"></div>
+    <div class="settings-item"><label>Tampilkan Terjemah</label><input type="checkbox" id="checkIndo" onchange="toggleIndo(this.checked)"></div>
+    
+    <div class="settings-item">
+        <label>Ukuran Font</label>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <button onclick="ubahFont(-2)" style="width:30px; height:30px; border-radius:50%; border:1px solid #ccc;">➖</button>
+            <b id="fontLabel" style="min-width:40px; text-align:center;">30px</b>
+            <button onclick="ubahFont(2)" style="width:30px; height:30px; border-radius:50%; border:1px solid #ccc;">➕</button>
+        </div>
+    </div>
+    <button onclick="toggleSettings()" style="width:100%; margin-top:20px; padding:12px; background:#e74c3c; color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">Simpan & Tutup</button>
+</div>
+
+  <!-- Content Ayat Surah -->
+<div id="mushaf-container"></div>
+
+  <!-- Add Playing -->
+<div class="player-bar">
+    <button id="btnPlay" class="btn-action" onclick="handlePlayPause()">Play Audio</button>
+</div>
+
+  <script>
+    const container = document.getElementById('mushaf-container');
+    const player = new Audio();
+    let dataAyatAktif = [];
+    let listSurah = [];
+    let surahSekarang = 1;
+    let indexBerjalan = 0;
+    let fontSizeArab = parseInt(localStorage.getItem('userFontSize')) || 30;
+    let qariAktif = localStorage.getItem('userQari') || 'Alafasy';
+
+    // FUNGSI ALERT MANIS (TOAST)
+    function tampilkanPesan(msg) {
+        const toast = document.getElementById('toast');
+        toast.innerText = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // 1. LOAD DATA AWAL
+    fetch('https://equran.id/api/v2/surat')
+        .then(r => r.json())
+        .then(res => {
+            listSurah = res.data;
+            muatPengaturanPaten();
+            filterSurah('');
+        });
+
+    function filterSurah(keyword) {
+        const hasilCari = document.getElementById('hasilCari');
+        hasilCari.innerHTML = '';
+        const filtered = listSurah.filter(s => s.namaLatin.toLowerCase().includes(keyword.toLowerCase())).slice(0, 5);
+        filtered.forEach(s => {
+            const btn = document.createElement('button');
+            btn.innerText = s.namaLatin;
+            btn.style = "padding:8px 15px; border-radius:20px; border:1px solid var(--primary); background:none; color:var(--primary); cursor:pointer; font-size:13px; font-weight:500; transition:0.3s;";
+            btn.onclick = () => gantiSurah(s.nomor);
+            hasilCari.appendChild(btn);
+        });
+    }
+
+       function kembaliKeHome() {
+    document.getElementById('dashboard-awal').style.display = 'block';
+    document.getElementById('mushaf-container').innerHTML = '';
+    document.getElementById('judul-app').innerText = "Surah";
+    window.scrollTo(0,0);
+}
+
+   
+   // ➕
+      function gantiSurah(nomor, targetAyat = null) {
+    // 1. Sembunyikan dashboard
+    document.getElementById('dashboard-awal').style.display = 'none';
+    surahSekarang = parseInt(nomor);
+
+    // 2. CEK MEMORI HP (OFFLINE CHECK)
+    const dataLama = localStorage.getItem('cache_surat_' + nomor);
+    
+    // Jika internet mati DAN ada data di memori, langsung tampilkan
+    if (!navigator.onLine && dataLama) {
+        const resData = JSON.parse(dataLama);
+        dataAyatAktif = resData.ayat;
+        document.getElementById('judul-app').innerText = resData.namaLatin;
+        renderAyat(resData.namaLatin);
+        if(targetAyat) scrollKeAyat(targetAyat);
+        window.scrollTo(0,0);
+        tampilkanPesan("🌙 Mode Offline: Menggunakan data tersimpan");
+        return; // Berhenti di sini, tidak usah fetch internet
+    }
+
+    // 3. JIKA ONLINE (ATAU DATA BELUM ADA), BARU FETCH
+    container.innerHTML = '<div style="text-align:center; padding:50px; opacity:0.6;">🌿 Memuat Surah...</div>';
+    
+    fetch(`https://equran.id/api/v2/surat/${nomor}`)
+        .then(r => r.json())
+        .then(res => {
+            dataAyatAktif = res.data.ayat;
+            document.getElementById('judul-app').innerText = res.data.namaLatin;
+            renderAyat(res.data.namaLatin);
+            
+            if(targetAyat) scrollKeAyat(targetAyat);
+            window.scrollTo(0,0);
+
+            // SIMPAN KE MEMORI (Untuk dibaca nanti pas offline)
+            localStorage.setItem('cache_surat_' + nomor, JSON.stringify(res.data));
+        })
+        .catch(err => {
+            // JAGA-JAGA JIKA INTERNET MATI SAAT FETCH
+            if(dataLama) {
+                const resData = JSON.parse(dataLama);
+                dataAyatAktif = resData.ayat;
+                renderAyat(resData.namaLatin);
+                tampilkanPesan("🌙 Koneksi hilang, memuat dari memori...");
+            } else {
+                container.innerHTML = '<div style="text-align:center; padding:50px; color:red;">❌ Gagal memuat. Butuh internet untuk pertama kali.</div>';
+            }
+        });
+}
+
+
+
+
+
+
+    function beriWarna(teks) {
+        if (!teks) return "";
+        let t = teks;
+        t = t.replace(/([نم]ّ)/g, '<span class="ghunnah">$1</span>');
+        t = t.replace(/([ۢ۬])/g, '<span class="iqlab">$1</span>');
+        t = t.replace(/(مْ)(?=\s*ب)/g, '<span class="ikhfa">$1</span>');
+        t = t.replace(/(مْ)(?=\s*م)/g, '<span class="idgham">$1</span>');
+        t = t.replace(/([نًٌٍْ])(?=\s*[يمنو])/g, '<span class="idgham">$1</span>');
+        t = t.replace(/([بجدطق]ْ)/g, '<span class="qalqalah">$1</span>');
+        t = t.replace(/(نْ|[ًٌٍ])(?![^<]*>)/g, function(match) {
+            return `<span class="ikhfa">${match}</span>`;
+        });
+        return t;
+    }
+
+    function renderAyat(namaSurah) {
+        container.innerHTML = '';
+        const namaAman = namaSurah.replace(/'/g, "\\'");
+        dataAyatAktif.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'ayat-card';
+            card.id = `card-${index}`;
+            
+            const dataShare = {
+                surah: namaSurah,
+                ayat: item.nomorAyat,
+                arab: item.teksArab,
+                latin: item.teksLatin,
+                indo: item.teksIndonesia
+            };
+            const dataString = btoa(unescape(encodeURIComponent(JSON.stringify(dataShare))));
+
+            card.innerHTML = `
+                <div style="display:flex; justify-content:space-between; margin-bottom: 15px; align-items: center; font-size:12px;">
+                    <span style="background:var(--primary); text-align: center; color:white; padding:5px 10px; border-radius:10px;">Ayat ${item.nomorAyat}</span>
+                    <div style="display:flex; gap:8px;">
+                        <button style="background:none; border:1px solid #ccc; color:var(--text); border-radius:5px; cursor:pointer; padding:3px 8px;" onclick="simpanBmark(${surahSekarang}, ${item.nomorAyat}, '${namaAman}')">🔖 Simpan</button>
+                        <button style="background:none; border:1px solid #ccc; color:var(--text); border-radius:5px; cursor:pointer; padding:3px 8px;" onclick="prosesShare('${dataString}')">📤 Share</button>
+                       
+                    </div>
+                </div>
+                <div class="teks-arab" onclick="putarAudio(${index})" style="font-size:${fontSizeArab}px;">${beriWarna(item.teksArab)}</div>
+                <div class="teks-latin" style="color:var(--primary); margin-top:15px; font-style:italic; font-size:14px;">${item.teksLatin}</div>
+                <div class="teks-indo" style="margin-top:10px; line-height:1.4; font-size:15px; opacity:0.9;">${item.teksIndonesia}</div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function putarAudio(index) {
+    if (index >= dataAyatAktif.length) {
+        document.getElementById('btnPlay').innerText = "Selesai";
+        return;
+    }
+    indexBerjalan = index;
+    const item = dataAyatAktif[index];
+    
+    // 1. Scroll dan highlight ayat
+    document.querySelectorAll('.ayat-card').forEach(c => c.classList.remove('active'));
+    const activeCard = document.getElementById(`card-${index}`);
+    if(activeCard) {
+        activeCard.classList.add('active');
+        const headerHeight = 100;
+        const offsetPosition = (activeCard.getBoundingClientRect().top + window.pageYOffset) - headerHeight;
+        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    }
+
+    // 2. Format nomor Surah dan Ayat menjadi 3 digit (WAJIB)
+    // Contoh: Surah 1 Ayat 1 -> 001001
+    const s = surahSekarang.toString().padStart(3, '0');
+    const a = item.nomorAyat.toString().padStart(3, '0');
+
+    // 3. Mapping Nama Folder Server EveryAyah (Agar semua Qari di select option berfungsi)
+    // Pastikan value di <option> pada HTML Anda sesuai dengan nama di bawah ini
+    const qariMap = {
+        'Alafasy': 'Alafasy_128kbps',
+        'Abdurrahmaan_As-Sudais': 'Abdurrahmaan_As-Sudais_192kbps',
+        'Muhammad_Jibreel': 'Muhammad_Jibreel_128kbps',
+        'Abdul_Basit_Murattal' : 'Abdul_Basit_Murattal_192kbps'
+    };
+
+    const folderQari = qariMap[qariAktif] || 'Alafasy_128kbps';
+    
+    // 4. Set Sumber Audio
+    player.src = `https://www.everyayah.com/data/${folderQari}/${s}${a}.mp3`;
+
+    player.onerror = function() {
+        tampilkanPesan("Audio tidak ditemukan, mencoba Alafasy...");
+        if(qariAktif !== 'Alafasy') {
+            qariAktif = 'Alafasy';
+            setTimeout(() => putarAudio(index), 1000);
+        }
+    };
+
+    player.play().then(() => {
+        document.getElementById('btnPlay').innerText = "Pause Audio";
+    }).catch(e => {
+        console.log("Audio play dipending: ", e);
+        tampilkanPesan("Klik tombol Play untuk memulai");
+    });
+
+    player.onended = () => putarAudio(index + 1);
+}
+
+    function gantiQari(nama) {
+        qariAktif = nama;
+        localStorage.setItem('userQari', nama);
+        if (!player.paused) putarAudio(indexBerjalan);
+        tampilkanPesan("Qari berhasil diubah");
+    }
+
+    function handlePlayPause() {
+        if (!player.src && dataAyatAktif.length > 0) return putarAudio(0);
+        if (player.paused) { player.play(); document.getElementById('btnPlay').innerText = "Pause"; }
+        else { player.pause(); document.getElementById('btnPlay').innerText = "Play Audio"; }
+    }
+
+    // ➕MUSAF
+     function gantiTipeMushaf(tipe) {
+    document.body.classList.remove('mushaf-1', 'mushaf-2', 'mushaf-3', 'mushaf-4');
+    document.body.classList.add(tipe);
+    localStorage.setItem('tipeMushaf', tipe);
+
+    // Otomatis matikan Dark Mode jika pindah ke Madinah atau Hafalan
+    if (tipe === 'mushaf-2' || tipe === 'mushaf-3') {
+        document.body.classList.remove('dark-mode');
+        document.getElementById('checkDark').checked = false;
+        localStorage.setItem('userDark', false);
+    }
+    
+    // Pastikan font arab di-update warnanya jika ada perubahan manual
+    document.querySelectorAll('.teks-arab').forEach(el => el.style.color = 'var(--text)');
+}
+
+    function toggleSettings() {
+        const panel = document.getElementById('settingsPanel');
+        const overlay = document.getElementById('overlay');
+        panel.classList.toggle('open');
+        overlay.style.display = panel.classList.contains('open') ? 'block' : 'none';
+    }
+
+    function toggleTajwid(isOn) { document.body.classList.toggle('tajwid-on', isOn); localStorage.setItem('userTajwid', isOn); }
+   // ➕➕
+   function toggleDarkMode(isDark) {
+    const tipeAktif = localStorage.getItem('tipeMushaf') || 'mushaf-1';
+    
+    // Jika user di Mushaf Madinah/Hafalan, dilarang Dark Mode
+    if (isDark && (tipeAktif === 'mushaf-2' || tipeAktif === 'mushaf-3')) {
+        tampilkanPesan("Mode Gelap dinonaktifkan untuk tema ini agar teks tetap terbaca.");
+        document.getElementById('checkDark').checked = false;
+        return;
+    }
+  document.body.classList.toggle('dark-mode', isDark);
+    localStorage.setItem('userDark', isDark);
+}
+
+
+
+    function toggleLatin(show) { document.body.classList.toggle('hide-latin', !show); localStorage.setItem('userLatin', show); }
+    function toggleIndo(show) { document.body.classList.toggle('hide-indo', !show); localStorage.setItem('userIndo', show); }
+    
+    function ubahFont(n) {
+        fontSizeArab += n;
+        document.querySelectorAll('.teks-arab').forEach(el => el.style.fontSize = fontSizeArab + 'px');
+        document.getElementById('fontLabel').innerText = fontSizeArab + 'px';
+        localStorage.setItem('userFontSize', fontSizeArab);
+    }
+
+    function simpanBmark(s, a, nama) {
+        localStorage.setItem('quran_bmark', JSON.stringify({s, a, nama}));
+        updateTampilanBookmark();
+        tampilkanPesan(`🔖 Tersimpan: ${nama} ayat ${a}`);
+    }
+
+    function updateTampilanBookmark() {
+    const b = JSON.parse(localStorage.getItem('quran_bmark'));
+    const dash = document.getElementById('dashboard-awal');
+    const resumeCard = document.getElementById('resume-card');
+    const resumeInfo = document.getElementById('resume-info');
+    const subJudul = document.getElementById('sub-judul');
+    
+    if(b) {
+        // Update info di Dashboard
+        resumeInfo.innerText = `${b.nama}: Ayat ${b.a}`;
+        resumeCard.style.display = 'block';
+        
+        // Update teks di Header (sub-judul)
+        if(subJudul) {
+            subJudul.innerHTML = `Lanjut: <b style="text-decoration:underline; cursor:pointer;" onclick="gantiSurah(${b.s}, ${b.a})">${b.nama} : ${b.a}</b>`;
+        }
+    } else {
+        resumeCard.style.display = 'none';
+    }
+}
+
+    function scrollKeAyat(no) {
+        setTimeout(() => {
+            const el = document.getElementById(`card-${no - 1}`);
+            if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 500);
+    }
+
+    function muatPengaturanPaten() {
+        muatJadwalSholat();
+        const isDark = localStorage.getItem('userDark') === 'true';
+        const isTajwid = localStorage.getItem('userTajwid') !== 'false';
+        const isLatin = localStorage.getItem('userLatin') !== 'false';
+        const isIndo = localStorage.getItem('userIndo') !== 'false';
+        const tipeSaved = localStorage.getItem('tipeMushaf') || 'mushaf-1';
+
+        function toggleDarkMode(isDark) {
+    const tipeAktif = localStorage.getItem('tipeMushaf') || 'mushaf-1';
+    
+    // Cegah Dark Mode aktif di Mushaf 2 dan 3
+    if (isDark && (tipeAktif === 'mushaf-2' || tipeAktif === 'mushaf-3')) {
+        tampilkanPesan("Dark mode kurang cocok untuk Mushaf ini");
+        document.getElementById('checkDark').checked = false;
+        return;
+    }
+
+    document.body.classList.toggle('dark-mode', isDark);
+    localStorage.setItem('userDark', isDark);
+}
+
+toggleDarkMode(isDark); toggleTajwid(isTajwid); toggleLatin(isLatin); toggleIndo(isIndo); gantiTipeMushaf(tipeSaved);
+
+        document.getElementById('checkDark').checked = isDark;
+        document.getElementById('checkTajwid').checked = isTajwid;
+        document.getElementById('checkLatin').checked = isLatin;
+        document.getElementById('checkIndo').checked = isIndo;
+        document.getElementById('pilihMushaf').value = tipeSaved;
+        document.getElementById('pilihQari').value = qariAktif;
+        document.getElementById('fontLabel').innerText = fontSizeArab + 'px';
+        updateTampilanBookmark();
+    }
+
+    function prosesShare(encodedData) {
+        try {
+            const decoded = JSON.parse(decodeURIComponent(escape(atob(encodedData))));
+            const pesan = `*${decoded.surah} : Ayat ${decoded.ayat}*\n\n` +
+                          `${decoded.arab}\n\n` +
+                          `_(${decoded.latin})_\n\n` +
+                          `Artinya: "${decoded.indo}"\n\n` +
+                          `via Al-Qur'an Pro by ℴ𝓉ℴ𝓎`;
+
+            if (navigator.share) {
+                navigator.share({ title: `Al-Qur'an - ${decoded.surah}:${decoded.ayat}`, text: pesan });
+            } else {
+                navigator.clipboard.writeText(pesan).then(() => {
+                    tampilkanPesan("📋 Teks berhasil disalin ke clipboard!");
+                });
+            }
+        } catch (e) {
+            tampilkanPesan("Gagal memproses share");
+        }
+    }
+
+    // Swipe Logic
+    let xStart = null;
+    document.addEventListener('touchstart', e => xStart = e.touches[0].clientX, {passive:true});
+    document.addEventListener('touchend', e => {
+        if (!xStart) return;
+        let xDiff = xStart - e.changedTouches[0].clientX;
+        if (Math.abs(xDiff) > 100) {
+            let cur = parseInt(surahSekarang);
+            if (xDiff > 0 && cur < 114) gantiSurah(cur + 1);
+            else if (xDiff < 0 && cur > 1) gantiSurah(cur - 1);
+        }
+        xStart = null;
+    }, {passive:true});
+
+     function bukaTerakhir() {
+    const b = JSON.parse(localStorage.getItem('quran_bmark'));
+    if(b) {
+        gantiSurah(b.s, b.a);
+    } else {
+        tampilkanPesan("Belum ada riwayat bacaan");
+    }
+}
+
+  function muatJadwalSholat() {
+    const urlDefault = 'https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=11';
+
+    fetch(urlDefault)
+        .then(r => r.json())
+        .then(res => {
+            updateTabelJadwal(res.data.timings, "Jakarta (Default)");
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        fetch(`https://api.aladhan.com/v1/timings?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&method=11`)
+                            .then(r => r.json())
+                            .then(resGPS => {
+                                updateTabelJadwal(resGPS.data.timings, "Lokasi GPS");
+                            });
+                    },
+                    () => console.log("GPS ditolak"),
+                    { timeout: 5000 }
+                );
+            }
+        })
+        .catch(err => console.log("Offline"));
+}
+        setInterval(() => {
+    const dash = document.getElementById('dashboard-awal');
+    if (dash && dash.style.display !== 'none') {
+        muatJadwalSholat();
+    }
+}, 60000);
+
+// Fungsi pembantu biar script nggak bengkak
+function updateTabelJadwal(t, kota) {
+    const jadwal = {
+        'Subuh': t.Fajr,
+        'Dzuhur': t.Dhuhr,
+        'Ashar': t.Asr,
+        'Maghrib': t.Maghrib,
+        'Isya': t.Isha
+    };
+
+    const sekarang = new Date();
+    const menitSekarang = sekarang.getHours() * 60 + sekarang.getMinutes();
+    
+    let waktuBerikutnya = null;
+    let namaWaktuBerikutnya = "";
+    let menitTerdekat = 9999;
+    let waktuAktifId = "";
+
+    // 1. Isi data ke HTML & cari waktu sholat berikutnya
+    const mappingId = {'Subuh': 'shubuh', 'Dzuhur': 'dhuhr', 'Ashar': 'asr', 'Maghrib': 'maghrib', 'Isya': 'isha'};
+
+    for (let nama in jadwal) {
+        const id = mappingId[nama];
+        const el = document.getElementById(id);
+        if (!el) continue;
+
+        el.innerText = jadwal[nama];
+        const [jam, menit] = jadwal[nama].split(':');
+        const menitJadwal = parseInt(jam) * 60 + parseInt(menit);
+
+        // Reset Style
+        el.parentElement.style.background = "transparent";
+        el.parentElement.style.color = "inherit";
+
+        // Cari waktu yang belum lewat (untuk countdown)
+        if (menitJadwal > menitSekarang && menitJadwal < menitTerdekat) {
+            menitTerdekat = menitJadwal;
+            namaWaktuBerikutnya = nama;
+        }
+
+        // Tentukan mana yang aktif sekarang
+        if (menitSekarang >= menitJadwal) {
+            waktuAktifId = id;
+        }
+    }
+
+    // 2. Highlight Waktu Aktif
+    if (waktuAktifId) {
+        const activeEl = document.getElementById(waktuAktifId).parentElement;
+        activeEl.style.background = "var(--primary)";
+        activeEl.style.color = "#ffffff";
+        activeEl.style.borderRadius = "8px";
+    }
+
+    // 3. Logika Countdown
+    const displayCountdown = document.getElementById('countdown-sholat');
+    if (namaWaktuBerikutnya) {
+        const selisih = menitTerdekat - menitSekarang;
+        const jamSisa = Math.floor(selisih / 60);
+        const menitSisa = selisih % 60;
+        
+        let teksSisa = jamSisa > 0 ? `${jamSisa} jam ${menitSisa} menit` : `${menitSisa} menit`;
+        displayCountdown.innerText = `⏳ ${teksSisa} lagi menuju ${namaWaktuBerikutnya}`;
+    } else {
+        // Jika semua waktu sudah lewat (setelah Isya), berarti berikutnya Subuh besok
+        displayCountdown.innerText = `🌙 Selamat istirahat, sampai jumpa di waktu Subuh`;
+    }
+}
+
+
+
+  if ('service-worker' in navigator) {
+  navigator.serviceWorker.register('sw.js')
+    .then(() => console.log("Aplikasi Siap Digunakan Offline! 🚀"))
+    .catch(() => console.log("Gagal mengaktifkan mode offline."));
+}
+</script>
+</body>
+</html>
