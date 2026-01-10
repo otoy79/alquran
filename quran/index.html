@@ -271,24 +271,34 @@ window.onload = () => {
     </script>
  
    <script>
-  // Minta ijin ke user buat kasih notif
-Notification.requestPermission().then(function(permission) {
-    if (permission === "granted") {
-        console.log("Ijin diberikan! Siap teriak Adzan, Bossku!");
-    }
-});
-
-// Contoh fungsi buat bunyiin suara
-function bunyiAdzan() {
-    let adzan = new Audio('audio/adzan.mp3');
-    adzan.play();
-    
-    // Munculin tulisan di layar HP biarpun aplikasi di background
-    new Notification("Waktunya Sholat!", {
-        body: "Sudah masuk waktu sholat, ayo ke masjid Bossku!",
-        icon: "img/icon.png"
+  // 1. PASUKAN PEMBERSIH (Biar nggak ada Error Dino lagi)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      for(let registration of registrations) {
+        registration.unregister();
+        console.log("SW Lama Dipecat!");
+      }
     });
-}
+  }
+
+  // 2. PASUKAN NOTIFIKASI (Biar bisa kasih tau waktu sholat)
+  function mintaIzinNotif() {
+    if (!("Notification" in window)) {
+      console.log("Browser tidak dukung notifikasi.");
+    } else if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+      Notification.requestPermission().then(function (permission) {
+        if (permission === "granted") {
+          new Notification("Izin Aktif!", {
+            body: "Siap ingatkan waktu sholat, Bossku!",
+            icon: "img/icon.png"
+          });
+        }
+      });
+    }
+  }
+
+  // Jalankan minta izin pas halaman kelar loading
+  window.addEventListener('load', mintaIzinNotif);
 </script>
 </body>
 </html>
