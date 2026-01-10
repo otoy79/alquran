@@ -1,21 +1,21 @@
-const cacheName = 'quran-pro-v6'; // Naikkan versinya!
+const cacheName = 'quran-pro-v7'; // Naikkan versinya!
 const assets = [
   './',
-  'index.html',
-  'asmaul-husna.html',
-  'tahlil.html',
-  'doa.html',
-  'tanggal.html',
-  'quran.html',
-  'jadwal.html',
-  'css/style.css',
-  'img/icon.png',
-  'data/asmaul-husna.js',
-  'data/tahlil.js',
-  'data/doa.js',
-  'data/1.js',
-  'data/2.js',
-  'data/3.js'
+  '/index.html',
+  '/asmaul-husna.html',
+  '/tahlil.html',
+  '/doa.html',
+  '/tanggal.html',
+  '/quran.html',
+  '/jadwal.html',
+  '/css/style.css',
+  '/img/icon.png',
+  '/data/asmaul-husna.js',
+  '/data/tahlil.js',
+  '/data/doa.js',
+  '/data/1.js',
+  '/data/2.js',
+  '/data/3.js'
 ];
 
 self.addEventListener('install', e => {
