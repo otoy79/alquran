@@ -140,7 +140,8 @@
     <b>Asmaul Husna</b>
 </a>
 </div>
-  <script src="js/waktu-sholat.js"></script>
+  
+  
     <script>
         // 1. Fungsi Sinkronisasi Tema (Ikuti Mushaf)
         function sinkronTema() {
@@ -220,12 +221,44 @@ function mulaiCountdown() {
 
     setInterval(() => {
         const sekarang = new Date();
-        const jamSekarang = sekarang.getHours().toString().padStart(2, '0') + ":" + sekarang.getMinutes().toString().padStart(2, '0');
+        const jam = sekarang.getHours().toString().padStart(2, '0');
+        const menit = sekarang.getMinutes().toString().padStart(2, '0');
         
+        // TETAP AKTIFKAN INI biar countdown gak macet
+        const jamSekarang = `${jam}:${menit}`; 
+        
+        // UNTUK TES: Ganti "01:35" dengan menit depan jam HP Masbrow sekarang
+        const waktuTes = "02:03"; 
+        
+        const detikSekarang = sekarang.getSeconds();
+        
+        // --- LOGIKA CEK ADZAN ---
+        if (detikSekarang === 0) {
+            // Jika mau tes pake waktuTes, ganti jadwalSholatGlobal[key] jadi waktuTes
+            for (let key in listNama) {
+                // PAKAI jamSekarang (untuk asli) atau waktuTes (untuk tes)
+                if (jadwalSholatGlobal[key] === jamSekarang || waktuTes === jamSekarang) {
+                    bunyiAdzan(listNama[key]);
+                }
+            }
+        }
+
+        // Sisa kode countdown ke bawah tetap pakai jamSekarang...
+        let targetWaktu = null;
+        let namaSholat = "";
+        for (let key in listNama) {
+            if (jadwalSholatGlobal[key] > jamSekarang) {
+                targetWaktu = jadwalSholatGlobal[key];
+                namaSholat = listNama[key];
+                break;
+            }
+        }
+        
+        // --- LOGIKA CEK ADZAN (SELESAI) ---
+
         let targetWaktu = null;
         let namaSholat = "";
 
-        // Cari sholat berikutnya
         for (let key in listNama) {
             if (jadwalSholatGlobal[key] > jamSekarang) {
                 targetWaktu = jadwalSholatGlobal[key];
@@ -234,18 +267,15 @@ function mulaiCountdown() {
             }
         }
 
-        // Jika sudah lewat Isya, targetnya Subuh besok
         if (!targetWaktu) {
             targetWaktu = jadwalSholatGlobal['Fajr'];
             namaSholat = "Subuh (Besok)";
         }
 
-        // Hitung selisih
         const [h, m] = targetWaktu.split(':');
         const waktuTarget = new Date();
         waktuTarget.setHours(h, m, 0);
         
-        // Jika buat besok
         if (waktuTarget < sekarang) waktuTarget.setDate(waktuTarget.getDate() + 1);
 
         const selisih = waktuTarget - sekarang;
@@ -257,15 +287,47 @@ function mulaiCountdown() {
             `⏳ <b>${sJam}j ${sMenit}m ${sDetik}s</b> lagi menuju <b>${namaSholat}</b>`;
     }, 1000);
 }
-     // Tambahkan di dalam script index.html biar muncul tanggal di Hero
-async function muatTanggalHeader() {
-    try {
-        const r = await fetch('https://api.aladhan.com/v1/gToH?date=' + new Date().getDate() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getFullYear());
-        const res = await r.json();
-        const d = res.data.hijri;
-        document.getElementById('greeting').innerHTML = `Assalamu'alaikum<br><small>${d.day} ${d.month.en} ${d.year} H</small>`;
-    } catch (e) { }
+
+// Fungsi Bunyi yang ringkas
+function bunyiAdzan(sholat) {
+    const audio = document.getElementById('audioAdzan');
+    if (audio) {
+        audio.play().catch(e => console.log("Audio diblokir browser, butuh klik dulu!"));
+    }
+    if (Notification.permission === "granted") {
+        new Notification(`Waktunya Sholat ${sholat}!`, {
+            body: `Sudah masuk waktu ${sholat}.`,
+            icon: "img/icon.png"
+        });
+    }
 }
+
+   // 2. PASUKAN NOTIFIKASI (Biar bisa kasih tau waktu sholat)
+  function mintaIzinNotif() {
+    if (!("Notification" in window)) {
+      console.log("Browser tidak dukung notifikasi.");
+    } else if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+      Notification.requestPermission().then(function (permission) {
+        if (permission === "granted") {
+          new Notification("Izin Aktif!", {
+            body: "Siap ingatkan waktu sholat, Bossku!",
+            icon: "img/icon.png"
+          });
+        }
+      });
+    }
+  }
+
+// 1. Fungsi Aktifkan Suara (Unlock Audio Browser)
+statusBtn.addEventListener('click', () => {
+    audioAdzan.play().then(() => {
+        audioAdzan.pause();
+        audioAdzan.currentTime = 0;
+        statusBtn.innerHTML = "✅ Adzan Otomatis Aktif (Tangerang)";
+        statusBtn.style.background = "#2e7d32";
+    }).catch(e => console.log("Gagal unlock audio"));
+});
+       
 
 // Panggil di window.onload
 window.onload = () => {
@@ -286,6 +348,58 @@ window.onload = () => {
       }
     });
   }
+
+   // 2. PASUKAN NOTIFIKASI (Biar bisa kasih tau waktu sholat)
+  function mintaIzinNotif() {
+    if (!("Notification" in window)) {
+      console.log("Browser tidak dukung notifikasi.");
+    } else if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+      Notification.requestPermission().then(function (permission) {
+        if (permission === "granted") {
+          new Notification("Izin Aktif!", {
+            body: "Siap ingatkan waktu sholat, Bossku!",
+            icon: "img/icon.png"
+          });
+        }
+      });
+    }
+  }
+
+  // Jalankan minta izin pas halaman kelar loading
+  window.addEventListener('load', mintaIzinNotif);
+ 
+   // Jadwal Slolat
+    const audioAdzan = document.getElementById('audioAdzan');
+const statusBtn = document.getElementById('adzan-status');
+let jadwalSholat = {};
+
+// 1. Fungsi Aktifkan Suara (Unlock Audio Browser)
+statusBtn.addEventListener('click', () => {
+    audioAdzan.play().then(() => {
+        audioAdzan.pause();
+        audioAdzan.currentTime = 0;
+        statusBtn.innerHTML = "✅ Adzan Otomatis Aktif (Tangerang)";
+        statusBtn.style.background = "#2e7d32";
+    }).catch(e => console.log("Gagal unlock audio"));
+});
+       
+   statusBtn.addEventListener('click', () => {
+    console.log("Tombol diklik, mencoba memutar audio...");
+    
+    // Coba putar langsung
+    audioAdzan.play()
+    .then(() => {
+        console.log("Berhasil! Audio sedang diputar.");
+        statusBtn.innerHTML = "✅ SUARA AKTIF!";
+        statusBtn.style.background = "green";
+    })
+    .catch(error => {
+        console.error("Gagal putar audio. Error:", error);
+        alert("Gagal putar suara! Cek apakah file audio/adzan.mp3 sudah di-upload?");
+    });
+});
+  
+
   </script>
   
 </body>
