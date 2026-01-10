@@ -383,23 +383,6 @@ statusBtn.addEventListener('click', () => {
     }).catch(e => console.log("Gagal unlock audio"));
 });
        
-   statusBtn.addEventListener('click', () => {
-    console.log("Tombol diklik, mencoba memutar audio...");
-    
-    // Coba putar langsung
-    audioAdzan.play()
-    .then(() => {
-        console.log("Berhasil! Audio sedang diputar.");
-        statusBtn.innerHTML = "✅ SUARA AKTIF!";
-        statusBtn.style.background = "green";
-    })
-    .catch(error => {
-        console.error("Gagal putar audio. Error:", error);
-        alert("Gagal putar suara! Cek apakah file audio/adzan.mp3 sudah di-upload?");
-    });
-});
-  
-
   </script>
   
 </body>
