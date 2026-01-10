@@ -308,15 +308,35 @@ window.onload = () => {
 const statusBtn = document.getElementById('adzan-status');
 let jadwalSholat = {};
 
-// 1. Fungsi Aktifkan Suara (Unlock Audio Browser)
+// 1. Fungsi Aktifkan Suara (Unlock // 1. Fungsi Cek Status Saat Halaman Dibuka
+function cekStatusAdzan() {
+    const statusTerakhir = localStorage.getItem('adzanAktif');
+    if (statusTerakhir === 'true') {
+        statusBtn.innerHTML = "✅ Adzan Otomatis Aktif (Tangerang)";
+        statusBtn.style.background = "#2e7d32";
+        console.log("Status: Masih aktif dari memori browser.");
+    }
+}
+
+// 2. Fungsi Aktifkan Suara (Klik Tombol)
 statusBtn.addEventListener('click', () => {
     audioAdzan.play().then(() => {
         audioAdzan.pause();
         audioAdzan.currentTime = 0;
+        
+        // SIMPAN KE MEMORI biar pas refresh tetep hijau
+        localStorage.setItem('adzanAktif', 'true');
+        
         statusBtn.innerHTML = "✅ Adzan Otomatis Aktif (Tangerang)";
         statusBtn.style.background = "#2e7d32";
-    }).catch(e => console.log("Gagal unlock audio"));
+        alert("Sip! Adzan otomatis sudah aktif, Bossku.");
+    }).catch(e => {
+        console.log("Gagal unlock audio", e);
+    });
 });
+
+// Panggil fungsi cek status pas web dibuka
+cekStatusAdzan();
 
 // 2. Ambil Jadwal Sholat dari API (Tangerang)
 async function getJadwal() {
@@ -361,7 +381,8 @@ function bunyiAdzan(namaSholat) {
 
 // Jalankan fungsi ambil jadwal
 getJadwal();
-       
+
+   
   </script>
   
 </body>
