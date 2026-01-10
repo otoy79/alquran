@@ -269,5 +269,17 @@ window.onload = () => {
     muatTanggalHeader(); // Tambahkan ini
 };
     </script>
+ 
+   <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      for(let registration of registrations) {
+        registration.unregister();
+        // Force refresh sekali biar bener-bener bersih
+        window.location.reload(); 
+      }
+    });
+  }
+</script>
 </body>
 </html>
