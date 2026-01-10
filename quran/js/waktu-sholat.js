@@ -50,7 +50,7 @@ setInterval(() => {
     const jam = String(sekarang.getHours()).padStart(2, '0');
     const menit = String(sekarang.getMinutes()).padStart(2, '0');
     // const waktuSekarang = `${jam}:${minit}`;
-         const waktuSekarang = "00:45"; // Paksa jam tes di sini (sesuaikan jam HP Masbrow sekarang!)
+         const waktuSekarang = "01:00"; // Paksa jam tes di sini (sesuaikan jam HP Masbrow sekarang!)
 
     const listSholat = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
     
