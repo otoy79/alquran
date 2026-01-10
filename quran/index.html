@@ -271,15 +271,24 @@ window.onload = () => {
     </script>
  
    <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-      for(let registration of registrations) {
-        registration.unregister();
-        // Force refresh sekali biar bener-bener bersih
-        window.location.reload(); 
-      }
+  // Minta ijin ke user buat kasih notif
+Notification.requestPermission().then(function(permission) {
+    if (permission === "granted") {
+        console.log("Ijin diberikan! Siap teriak Adzan, Bossku!");
+    }
+});
+
+// Contoh fungsi buat bunyiin suara
+function bunyiAdzan() {
+    let adzan = new Audio('audio/adzan.mp3');
+    adzan.play();
+    
+    // Munculin tulisan di layar HP biarpun aplikasi di background
+    new Notification("Waktunya Sholat!", {
+        body: "Sudah masuk waktu sholat, ayo ke masjid Bossku!",
+        icon: "img/icon.png"
     });
-  }
+}
 </script>
 </body>
 </html>
